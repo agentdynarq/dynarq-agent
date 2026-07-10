@@ -1,0 +1,4 @@
+# The local router backend and all tools run on the standard library alone.
+# These are only needed for the OpenAI function-calling backend.
+openai>=1.0
+python-dotenv>=1.0
