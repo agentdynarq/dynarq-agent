@@ -1,5 +1,9 @@
 # dynarq-agent
 
+[![tests](https://github.com/agentdynarq/dynarq-agent/actions/workflows/tests.yml/badge.svg)](https://github.com/agentdynarq/dynarq-agent/actions/workflows/tests.yml)
+![python](https://img.shields.io/badge/python-3.10%2B-blue)
+![license](https://img.shields.io/badge/license-MIT-green)
+
 A minimal, readable **AI agent runtime**. It gives a language model a set of **tools** (also called skills), lets it decide which to call to answer a question, runs them, feeds the results back, and repeats until it has an answer. The whole loop is plain Python so you can see exactly how tool-calling agents work, without a big framework.
 
 It runs two ways:
