@@ -43,6 +43,15 @@ class LocalRouterBackend:
     def run(self, query: str, registry: ToolRegistry) -> str:
         q = query.lower()
 
+        url = re.search(r"https?://\S+", query)
+        if registry.get("fetch_url") and url:
+            return f"[fetch_url] {registry.get('fetch_url').run(url=url.group(0))}"
+
+        if registry.get("read_file") and "file" in q and any(w in q for w in ("read", "open", "show", "cat")):
+            path = re.search(r"[\"']([^\"']+)[\"']", query) or re.search(r"([\w./\\-]+\.\w+)", query)
+            if path:
+                return f"[read_file] {registry.get('read_file').run(path=path.group(1))}"
+
         if registry.get("calculator") and re.search(r"\d", q) and re.search(r"[-+*/^x]", q):
             expr = _extract_math(query)
             if expr:
@@ -59,8 +68,9 @@ class LocalRouterBackend:
             return f"[text_stats] {registry.get('text_stats').run(text=query)}"
 
         return (
-            "I can do arithmetic, unit conversion, the current time, and text stats. "
-            "Try 'what is 12 * 8?' or 'convert 5 km to m'."
+            "I can do arithmetic, unit conversion, the current time, text stats, "
+            "read a local file, and fetch a web page. "
+            "Try 'what is 12 * 8?', 'convert 5 km to m', or 'fetch https://example.com'."
         )
 
 

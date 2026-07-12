@@ -69,6 +69,15 @@ The `parameters` field is a JSON schema, which is exactly what OpenAI function-c
 | `converter` | Length (m, km, cm, mi, ft, in, yd) and temperature (c, f, k) |
 | `clock` | Current UTC date and time |
 | `text_stats` | Word, character and sentence counts |
+| `read_file` | Read a local text file, confined to the working directory (no path traversal) |
+| `fetch_url` | Fetch an http(s) page as readable text, with an SSRF guard (no private/loopback hosts) |
+
+### A note on the two tools that touch the outside world
+
+`read_file` and `fetch_url` are the useful-but-risky ones, so they ship with guardrails:
+
+- **`read_file`** resolves the real path and refuses anything that lands outside the working directory, so `../../secrets.env` cannot escape the sandbox. It also caps file size and truncates long output.
+- **`fetch_url`** allows only http/https, resolves the host, and refuses private, loopback, link-local and reserved addresses (for example `localhost` or the cloud metadata address `169.254.169.254`), re-checking on every redirect. This blocks the classic server-side request forgery abuse of a fetch tool.
 
 ## Quickstart
 
@@ -79,6 +88,8 @@ pip install -r requirements.txt   # only needed for the OpenAI backend
 python cli.py "what is 12 * 8?"
 python cli.py "convert 5 km to m"
 python cli.py "what time is it?"
+python cli.py "read the file README.md"
+python cli.py "fetch https://example.com"
 
 # interactive
 python cli.py
@@ -108,6 +119,8 @@ dynarq-agent/
       converter.py          unit conversion
       datetime_tool.py      current time
       text_tools.py         text statistics
+      file_reader.py        read a local file (path-traversal guarded)
+      http_fetch.py         fetch a web page (SSRF guarded)
   tests/                    tool tests + local-agent routing tests
   requirements.txt
 ```
@@ -128,7 +141,7 @@ python -m unittest discover -s tests -v
 
 ## Roadmap
 
-- More skills: web search, file reader, HTTP fetch.
+- More skills: web search, JSON/HTTP POST.
 - Memory across turns in interactive mode.
 - A planner that breaks a big task into sub-tasks before calling tools.
 - Support for other providers (Anthropic tool use).

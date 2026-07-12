@@ -40,8 +40,10 @@ class TestTextStats(unittest.TestCase):
 class TestRegistry(unittest.TestCase):
     def test_default_registry_has_tools(self):
         registry = default_registry()
-        self.assertEqual(len(registry), 4)
+        self.assertEqual(len(registry), 6)
         self.assertIsNotNone(registry.get("calculator"))
+        self.assertIsNotNone(registry.get("read_file"))
+        self.assertIsNotNone(registry.get("fetch_url"))
         # Each tool exposes a valid OpenAI-style schema.
         for schema in registry.schemas():
             self.assertEqual(schema["type"], "function")

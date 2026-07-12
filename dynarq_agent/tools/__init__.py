@@ -4,8 +4,10 @@ from .calculator import CALCULATOR
 from .datetime_tool import CLOCK
 from .text_tools import TEXT_STATS
 from .converter import CONVERTER
+from .file_reader import READ_FILE
+from .http_fetch import FETCH_URL
 
-BUILTINS = [CALCULATOR, CLOCK, TEXT_STATS, CONVERTER]
+BUILTINS = [CALCULATOR, CLOCK, TEXT_STATS, CONVERTER, READ_FILE, FETCH_URL]
 
 
 def default_registry() -> ToolRegistry:

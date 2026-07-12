@@ -4,10 +4,19 @@
     python cli.py                          # interactive
 """
 import argparse
+import sys
+
 from dynarq_agent.agent import build_default_agent
 
 
 def main():
+    # Tool output (a fetched page, a file) can contain characters a legacy
+    # Windows console cannot encode; force UTF-8 so printing never crashes.
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except (AttributeError, ValueError):
+        pass
+
     parser = argparse.ArgumentParser(description="Dynarq Agent: a tiny tool-using AI agent.")
     parser.add_argument("query", nargs="?", help="a one-shot question; omit for interactive mode")
     args = parser.parse_args()
